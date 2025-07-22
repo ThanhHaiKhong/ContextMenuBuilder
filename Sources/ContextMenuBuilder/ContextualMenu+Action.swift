@@ -1,5 +1,5 @@
 //
-//  ContextMenu+Action.swift
+//  ContextualMenu+Action.swift
 //  ContextMenuBuilder
 //
 //  Created by Thanh Hai Khong on 8/7/25.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-extension ContextMenu {
+extension ContextualMenu {
 	public struct Action: Identifiable, Sendable {
 		public let id: ID
 		public let title: String
@@ -40,8 +40,8 @@ extension ContextMenu {
 
 // MARK: - Equatable
 
-extension ContextMenu.Action: Equatable {
-	public static func == (lhs: ContextMenu.Action, rhs: ContextMenu.Action) -> Bool {
+extension ContextualMenu.Action: Equatable {
+	public static func == (lhs: ContextualMenu.Action, rhs: ContextualMenu.Action) -> Bool {
 		lhs.id == rhs.id &&
 		lhs.title == rhs.title &&
 		lhs.image == rhs.image &&
@@ -53,7 +53,7 @@ extension ContextMenu.Action: Equatable {
 
 // MARK: - Identifiable ID
 
-extension ContextMenu.Action {
+extension ContextualMenu.Action {
 	public struct ID: RawRepresentable, Identifiable, Sendable, Hashable {
 		public let rawValue: String
 		public var id: String { rawValue }
@@ -70,7 +70,7 @@ extension ContextMenu.Action {
 
 // MARK: - Attributes
 
-extension ContextMenu.Action {
+extension ContextualMenu.Action {
 	public struct Attributes: OptionSet, Sendable, Equatable {
 		public let rawValue: Int
 		
@@ -86,7 +86,7 @@ extension ContextMenu.Action {
 
 // MARK: - State
 
-extension ContextMenu.Action {
+extension ContextualMenu.Action {
 	public enum State: Sendable, Equatable {
 		case off
 		case on
@@ -96,16 +96,16 @@ extension ContextMenu.Action {
 
 // MARK: - Configuration
 
-extension ContextMenu.Action {
+extension ContextualMenu.Action {
 	public struct Configuration: Identifiable, Sendable, Equatable {
 		public let id: ID
-		public let attributesProvider: @Sendable () async -> ContextMenu.Action.Attributes
-		public let stateProvider: @Sendable () async -> ContextMenu.Action.State
+		public let attributesProvider: @Sendable () async -> ContextualMenu.Action.Attributes
+		public let stateProvider: @Sendable () async -> ContextualMenu.Action.State
 		
 		public init(
 			id: ID,
-			attributesProvider: @escaping @Sendable () async -> ContextMenu.Action.Attributes,
-			stateProvider: @escaping @Sendable () async -> ContextMenu.Action.State
+			attributesProvider: @escaping @Sendable () async -> ContextualMenu.Action.Attributes,
+			stateProvider: @escaping @Sendable () async -> ContextualMenu.Action.State
 		) {
 			self.id = id
 			self.attributesProvider = attributesProvider
@@ -118,7 +118,7 @@ extension ContextMenu.Action {
 	}
 }
 
-extension ContextMenu.Action {
+extension ContextualMenu.Action {
 	public struct Kind: RawRepresentable, Sendable, Equatable {
 		public let rawValue: String
 		
@@ -132,9 +132,9 @@ extension ContextMenu.Action {
 	}
 }
 
-extension ContextMenu.Action {
+extension ContextualMenu.Action {
 	@MainActor
-	public func toUIMenuElement(_ handler: ((ContextMenu.Action, AnyContextMenuBuildable) -> Void)?, from source: AnyContextMenuBuildable) -> UIMenuElement {
+	public func toUIMenuElement(_ handler: ((ContextualMenu.Action, AnyContextMenuBuildable) -> Void)?, from source: AnyContextMenuBuildable) -> UIMenuElement {
 		if let deferredProvider = deferredProvider {
 			return UIMenu(
 				title: title,
@@ -172,51 +172,51 @@ extension ContextMenu.Action {
 	}
 }
 
-extension ContextMenu.Action {
+extension ContextualMenu.Action {
 	
-	public static let share = ContextMenu.Action(
+	public static let share = ContextualMenu.Action(
 		id: .share,
 		title: "Share",
 		image: UIImage(systemName: "square.and.arrow.up"),
 		attributes: []
 	)
 	
-	public static let favorite = ContextMenu.Action(
+	public static let favorite = ContextualMenu.Action(
 		id: .favorite,
 		title: "Favorite",
 		image: UIImage(systemName: "star"),
 		attributes: []
 	)
 	
-	public static let unfavorite = ContextMenu.Action(
+	public static let unfavorite = ContextualMenu.Action(
 		id: .unfavorite,
 		title: "Unfavorite",
 		image: UIImage(systemName: "star.slash"),
 		attributes: []
 	)
 	
-	public static let viewFullLyrics = ContextMenu.Action(
+	public static let viewFullLyrics = ContextualMenu.Action(
 		id: .viewFullLyrics,
 		title: "View Full Lyrics",
 		image: UIImage(systemName: "text.bubble"),
 		attributes: []
 	)
 	
-	public static let reportAConcern = ContextMenu.Action(
+	public static let reportAConcern = ContextualMenu.Action(
 		id: .reportAConcern,
 		title: "Report a Concern",
 		image: UIImage(systemName: "exclamationmark.bubble"),
 		attributes: []
 	)
 	
-	public static let addToLibrary = ContextMenu.Action(
+	public static let addToLibrary = ContextualMenu.Action(
 		id: .addToLibrary,
 		title: "Add to Library",
 		image: UIImage(systemName: "plus"),
 		attributes: []
 	)
 	
-	public static let addToAPlaylist = ContextMenu.Action(
+	public static let addToAPlaylist = ContextualMenu.Action(
 		id: .addToAPlaylist,
 		title: "Add to a Playlist...",
 		image: UIImage(systemName: "text.badge.plus"),
@@ -224,11 +224,11 @@ extension ContextMenu.Action {
 	) {
 		try? await Task.sleep(nanoseconds: 1_000_000_000)
 		let playlists = ["Hot Hits", "Chill Vibes", "Workout Mix", "Throwback Classics", "Favorites"]
-		var actions = [ContextMenu.Action]()
+		var actions = [ContextualMenu.Action]()
 		
 		for playlist in playlists {
-			let action = ContextMenu.Action(
-				id: ContextMenu.Action.ID(playlist),
+			let action = ContextualMenu.Action(
+				id: ContextualMenu.Action.ID(playlist),
 				title: playlist,
 				image: UIImage(systemName: "music.note.list"),
 				attributes: playlist == "Favorites" ? [.disabled] : [],
@@ -239,35 +239,35 @@ extension ContextMenu.Action {
 		return actions
 	}
 	
-	public static let playNext = ContextMenu.Action(
+	public static let playNext = ContextualMenu.Action(
 		id: .playNext,
 		title: "Play Next",
 		image: UIImage(systemName: "text.line.first.and.arrowtriangle.forward"),
 		attributes: [],
 	)
 	
-	public static let addToQueue = ContextMenu.Action(
+	public static let addToQueue = ContextualMenu.Action(
 		id: .addToQueue,
 		title: "Add to Queue",
 		image: UIImage(systemName: "text.line.last.and.arrowtriangle.forward"),
 		attributes: []
 	)
 	
-	public static let remove = ContextMenu.Action(
+	public static let remove = ContextualMenu.Action(
 		id: .remove,
 		title: "Remove...",
 		image: UIImage(systemName: "xmark.bin"),
 		attributes: []
 	)
 	
-	public static let removeFromAllPlaylists = ContextMenu.Action(
+	public static let removeFromAllPlaylists = ContextualMenu.Action(
 		id: .removeFromAllPlaylists,
 		title: "Remove from all Playlists",
 		image: UIImage(systemName: "rectangle.stack.badge.minus"),
 		attributes: [.destructive]
 	)
 	
-	public static let deleteFromLibrary = ContextMenu.Action(
+	public static let deleteFromLibrary = ContextualMenu.Action(
 		id: .deleteFromLibrary,
 		title: "Delete from Library",
 		image: UIImage(systemName: "trash"),
@@ -275,22 +275,22 @@ extension ContextMenu.Action {
 	)
 }
 
-extension ContextMenu.Action.ID {
-	public static let remove = ContextMenu.Action.ID("remove")
-	public static let addToLibrary = ContextMenu.Action.ID("addToLibrary")
-	public static let addToAPlaylist = ContextMenu.Action.ID("addToAPlaylist")
-	public static let share = ContextMenu.Action.ID("share")
-	public static let reportAConcern = ContextMenu.Action.ID("reportAConcern")
-	public static let favorite = ContextMenu.Action.ID("favorite")
-	public static let unfavorite = ContextMenu.Action.ID("unfavorite")
-	public static let viewFullLyrics = ContextMenu.Action.ID("viewFullLyrics")
-	public static let playNext = ContextMenu.Action.ID("playNext")
-	public static let addToQueue = ContextMenu.Action.ID("addToQueue")
-	public static let deleteFromLibrary = ContextMenu.Action.ID("deleteFromLibrary")
-	public static let removeFromAllPlaylists = ContextMenu.Action.ID("removeFromAllPlaylists")
+extension ContextualMenu.Action.ID {
+	public static let remove = ContextualMenu.Action.ID("remove")
+	public static let addToLibrary = ContextualMenu.Action.ID("addToLibrary")
+	public static let addToAPlaylist = ContextualMenu.Action.ID("addToAPlaylist")
+	public static let share = ContextualMenu.Action.ID("share")
+	public static let reportAConcern = ContextualMenu.Action.ID("reportAConcern")
+	public static let favorite = ContextualMenu.Action.ID("favorite")
+	public static let unfavorite = ContextualMenu.Action.ID("unfavorite")
+	public static let viewFullLyrics = ContextualMenu.Action.ID("viewFullLyrics")
+	public static let playNext = ContextualMenu.Action.ID("playNext")
+	public static let addToQueue = ContextualMenu.Action.ID("addToQueue")
+	public static let deleteFromLibrary = ContextualMenu.Action.ID("deleteFromLibrary")
+	public static let removeFromAllPlaylists = ContextualMenu.Action.ID("removeFromAllPlaylists")
 }
 
-extension ContextMenu.Action.Attributes {
+extension ContextualMenu.Action.Attributes {
 	@MainActor
 	public var toUIActionAttributes: UIMenuElement.Attributes {
 		var attributes: UIMenuElement.Attributes = []
@@ -309,7 +309,7 @@ extension ContextMenu.Action.Attributes {
 	}
 }
 
-extension ContextMenu.Action.State {
+extension ContextualMenu.Action.State {
 	@MainActor
 	public var toUIActionState: UIMenuElement.State {
 		switch self {
@@ -320,6 +320,6 @@ extension ContextMenu.Action.State {
 	}
 }
 
-extension ContextMenu.Action.Kind {
-	public static let `default` = ContextMenu.Action.Kind(rawValue: "defaultAction")
+extension ContextualMenu.Action.Kind {
+	public static let `default` = ContextualMenu.Action.Kind(rawValue: "defaultAction")
 }

@@ -1,5 +1,5 @@
 //
-//  ContextMenu.swift
+//  ContextualMenu.swift
 //  ContextMenuBuilder
 //
 //  Created by Thanh Hai Khong on 6/7/25.
@@ -7,14 +7,14 @@
 
 import UIKit
 
-public struct ContextMenu: Identifiable, Sendable {
+public struct ContextualMenu: Identifiable, Sendable {
 	public let id: String
 	public let source: AnyContextMenuBuildable
 	public let title: String
 	public let image: UIImage?
 	public let options: Options
 	public let sections: [Section]
-	public var handler: ((@Sendable (ContextMenu.Action, AnyContextMenuBuildable) -> Void))?
+	public var handler: ((@Sendable (ContextualMenu.Action, AnyContextMenuBuildable) -> Void))?
 	
 	public init(
 		id: String = UUID().uuidString,
@@ -23,7 +23,7 @@ public struct ContextMenu: Identifiable, Sendable {
 		image: UIImage? = nil,
 		options: Options = [],
 		@MenuSectionBuilder _ builder: () -> [Section],
-		handler: (@Sendable (ContextMenu.Action, AnyContextMenuBuildable) -> Void)? = nil
+		handler: (@Sendable (ContextualMenu.Action, AnyContextMenuBuildable) -> Void)? = nil
 	) {
 		self.id = id
 		self.source = source
@@ -41,7 +41,7 @@ public struct ContextMenu: Identifiable, Sendable {
 		image: UIImage? = nil,
 		options: Options = [],
 		sections: [Section],
-		handler: (@Sendable (ContextMenu.Action, AnyContextMenuBuildable) -> Void)? = nil
+		handler: (@Sendable (ContextualMenu.Action, AnyContextMenuBuildable) -> Void)? = nil
 	) {
 		self.id = id
 		self.source = source
@@ -55,8 +55,8 @@ public struct ContextMenu: Identifiable, Sendable {
 
 // MARK: - Equatable
 
-extension ContextMenu: Equatable {
-	public static func == (lhs: ContextMenu, rhs: ContextMenu) -> Bool {
+extension ContextualMenu: Equatable {
+	public static func == (lhs: ContextualMenu, rhs: ContextualMenu) -> Bool {
 		lhs.id == rhs.id &&
 		lhs.title == rhs.title &&
 		lhs.image == rhs.image &&
@@ -67,9 +67,9 @@ extension ContextMenu: Equatable {
 
 // MARK: - Supporting Methods
 
-extension ContextMenu {
+extension ContextualMenu {
 	@MainActor
-	func toUIMenu() -> UIMenu {
+	public func toUIMenu() -> UIMenu {
 		if sections.count == 1 {
 			let children = sections[0].toUIMenuElement(handler, from: source)
 			

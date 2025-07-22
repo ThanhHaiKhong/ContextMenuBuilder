@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-extension ContextMenu {
+extension ContextualMenu {
 	public struct Options: OptionSet, Sendable, Equatable {
 		public let rawValue: Int
 		
@@ -18,13 +18,13 @@ extension ContextMenu {
 	}
 }
 
-extension ContextMenu.Options {
-	public static let displayInline = ContextMenu.Options(rawValue: 1 << 0)
-	public static let destructive = ContextMenu.Options(rawValue: 1 << 1)
-	public static let singleSelection = ContextMenu.Options(rawValue: 1 << 2)
+extension ContextualMenu.Options {
+	public static let displayInline = ContextualMenu.Options(rawValue: 1 << 0)
+	public static let destructive = ContextualMenu.Options(rawValue: 1 << 1)
+	public static let singleSelection = ContextualMenu.Options(rawValue: 1 << 2)
 }
 
-extension ContextMenu.Options {
+extension ContextualMenu.Options {
 	@MainActor
 	public var toUIMenuOptions: UIMenu.Options {
 		var result: UIMenu.Options = []

@@ -8,13 +8,13 @@
 import Foundation
 import UIKit
 
-extension ContextMenu {
+extension ContextualMenu {
 	public struct Section: Sendable {
 		public let id: ID
 		public let header: String
 		public let title: String
 		public let image: UIImage?
-		public let options: ContextMenu.Options
+		public let options: ContextualMenu.Options
 		public let children: [Item]
 		
 		public init(
@@ -22,8 +22,8 @@ extension ContextMenu {
 			header: String = "",
 			title: String = "",
 			image: UIImage? = nil,
-			options: ContextMenu.Options = [],
-			@MenuItemBuilder _ builder: () -> [ContextMenu.Section.Item]
+			options: ContextualMenu.Options = [],
+			@MenuItemBuilder _ builder: () -> [ContextualMenu.Section.Item]
 		) {
 			self.id = id
 			self.header = header
@@ -38,8 +38,8 @@ extension ContextMenu {
 			header: String = "",
 			title: String = "",
 			image: UIImage? = nil,
-			options: ContextMenu.Options = [],
-			children: [ContextMenu.Section.Item] = []
+			options: ContextualMenu.Options = [],
+			children: [ContextualMenu.Section.Item] = []
 		) {
 			self.id = id
 			self.header = header
@@ -53,8 +53,8 @@ extension ContextMenu {
 
 // MARK: - Equatable
 
-extension ContextMenu.Section: Equatable {
-	public static func == (lhs: ContextMenu.Section, rhs: ContextMenu.Section) -> Bool {
+extension ContextualMenu.Section: Equatable {
+	public static func == (lhs: ContextualMenu.Section, rhs: ContextualMenu.Section) -> Bool {
 		lhs.id == rhs.id &&
 		lhs.header == rhs.header &&
 		lhs.title == rhs.title &&
@@ -66,7 +66,7 @@ extension ContextMenu.Section: Equatable {
 
 // MARK: - Identifiable
 
-extension ContextMenu.Section {
+extension ContextualMenu.Section {
 	public struct ID: Identifiable, RawRepresentable, Sendable, Hashable {
 		public let rawValue: String
 		public var id: String { rawValue }
@@ -81,10 +81,10 @@ extension ContextMenu.Section {
 	}
 }
 
-extension ContextMenu.Section {
+extension ContextualMenu.Section {
 	public enum Item: Sendable, Equatable {
-		case action(ContextMenu.Action)
-		case submenu(ContextMenu)
+		case action(ContextualMenu.Action)
+		case submenu(ContextualMenu)
 	}
 }
 
@@ -92,31 +92,31 @@ extension ContextMenu.Section {
 
 @resultBuilder
 public struct MenuItemBuilder {
-	public static func buildBlock(_ components: ContextMenu.Section.Item...) -> [ContextMenu.Section.Item] {
+	public static func buildBlock(_ components: ContextualMenu.Section.Item...) -> [ContextualMenu.Section.Item] {
 		components
 	}
 	
-	public static func buildOptional(_ component: [ContextMenu.Section.Item]?) -> [ContextMenu.Section.Item] {
+	public static func buildOptional(_ component: [ContextualMenu.Section.Item]?) -> [ContextualMenu.Section.Item] {
 		component ?? []
 	}
 	
-	public static func buildEither(first component: [ContextMenu.Section.Item]) -> [ContextMenu.Section.Item] {
+	public static func buildEither(first component: [ContextualMenu.Section.Item]) -> [ContextualMenu.Section.Item] {
 		component
 	}
 	
-	public static func buildEither(second component: [ContextMenu.Section.Item]) -> [ContextMenu.Section.Item] {
+	public static func buildEither(second component: [ContextualMenu.Section.Item]) -> [ContextualMenu.Section.Item] {
 		component
 	}
 	
-	public static func buildArray(_ components: [[ContextMenu.Section.Item]]) -> [ContextMenu.Section.Item] {
+	public static func buildArray(_ components: [[ContextualMenu.Section.Item]]) -> [ContextualMenu.Section.Item] {
 		components.flatMap { $0 }
 	}
 }
 
 
-extension ContextMenu.Section {
+extension ContextualMenu.Section {
 	@MainActor
-	func toUIMenuElement(_ handler: ((ContextMenu.Action, AnyContextMenuBuildable) -> Void)?, from source: AnyContextMenuBuildable) -> UIMenuElement {
+	func toUIMenuElement(_ handler: ((ContextualMenu.Action, AnyContextMenuBuildable) -> Void)?, from source: AnyContextMenuBuildable) -> UIMenuElement {
 		let elements = children.map {
 			switch $0 {
 			case let .action(action): return action.toUIMenuElement(handler, from: source) as UIMenuElement
@@ -148,41 +148,41 @@ extension ContextMenu.Section {
 	}
 }
 
-extension ContextMenu.Section {
+extension ContextualMenu.Section {
 	
-	public static let library = ContextMenu.Section(
+	public static let library = ContextualMenu.Section(
 		id: .library,
 		options: [.displayInline]
 	) {
-		Item.action(.addToAPlaylist)
 		Item.action(.addToLibrary)
+		Item.action(.addToAPlaylist)
 	}
 	
-	public static let favorite = ContextMenu.Section(
+	public static let favorite = ContextualMenu.Section(
 		id: .favorite,
 		options: [.displayInline]
 	) {
-		Item.action(.viewFullLyrics)
 		Item.action(.favorite)
+		Item.action(.viewFullLyrics)
 	}
 	
-	public static let share = ContextMenu.Section(
+	public static let share = ContextualMenu.Section(
 		id: .share,
 		options: [.displayInline]
 	) {
-		Item.action(.reportAConcern)
 		Item.action(.share)
+		Item.action(.reportAConcern)
 	}
 	
-	public static let queue = ContextMenu.Section(
+	public static let queue = ContextualMenu.Section(
 		id: .queue,
 		options: [.displayInline]
 	) {
-		Item.action(.addToQueue)
 		Item.action(.playNext)
+		Item.action(.addToQueue)
 	}
 	
-	public static let remove = ContextMenu.Section(
+	public static let remove = ContextualMenu.Section(
 		id: .remove,
 		title: "Remove...",
 		image: UIImage(systemName: "xmark.bin"),
@@ -193,13 +193,13 @@ extension ContextMenu.Section {
 	}
 }
 
-extension ContextMenu.Section.ID {
-	public static let standalone = ContextMenu.Section.ID("standaloneSection")
-	public static let library = ContextMenu.Section.ID("librarySection")
-	public static let share = ContextMenu.Section.ID("shareSection")
-	public static let queue = ContextMenu.Section.ID("queueSection")
-	public static let remove = ContextMenu.Section.ID("removeSection")
-	public static let favorite = ContextMenu.Section.ID("removeSection")
+extension ContextualMenu.Section.ID {
+	public static let standalone = ContextualMenu.Section.ID("standaloneSection")
+	public static let library = ContextualMenu.Section.ID("librarySection")
+	public static let share = ContextualMenu.Section.ID("shareSection")
+	public static let queue = ContextualMenu.Section.ID("queueSection")
+	public static let remove = ContextualMenu.Section.ID("removeSection")
+	public static let favorite = ContextualMenu.Section.ID("removeSection")
 }
 
 
@@ -207,23 +207,23 @@ extension ContextMenu.Section.ID {
 
 @resultBuilder
 public struct MenuSectionBuilder {
-	public static func buildBlock(_ components: ContextMenu.Section...) -> [ContextMenu.Section] {
+	public static func buildBlock(_ components: ContextualMenu.Section...) -> [ContextualMenu.Section] {
 		components
 	}
 	
-	public static func buildOptional(_ component: [ContextMenu.Section]?) -> [ContextMenu.Section] {
+	public static func buildOptional(_ component: [ContextualMenu.Section]?) -> [ContextualMenu.Section] {
 		component ?? []
 	}
 	
-	public static func buildEither(first component: [ContextMenu.Section]) -> [ContextMenu.Section] {
+	public static func buildEither(first component: [ContextualMenu.Section]) -> [ContextualMenu.Section] {
 		component
 	}
 	
-	public static func buildEither(second component: [ContextMenu.Section]) -> [ContextMenu.Section] {
+	public static func buildEither(second component: [ContextualMenu.Section]) -> [ContextualMenu.Section] {
 		component
 	}
 	
-	public static func buildArray(_ components: [[ContextMenu.Section]]) -> [ContextMenu.Section] {
+	public static func buildArray(_ components: [[ContextualMenu.Section]]) -> [ContextualMenu.Section] {
 		components.flatMap { $0 }
 	}
 }
