@@ -3,7 +3,8 @@
 
 import Foundation
 import UIKit
-import SwiftUI
+
+public typealias ContextualMenuHandler = @Sendable (ContextualMenu.Action, AnyContextMenuBuildable) -> Void
 
 public protocol ContextMenuBuildable: Sendable {
 	var sections: [ContextualMenu.Section] { get }
