@@ -8,12 +8,12 @@ public typealias ContextualMenuHandler = @Sendable (ContextualMenu.Action, AnyCo
 
 public protocol ContextMenuBuildable: Sendable {
 	var sections: [ContextualMenu.Section] { get }
-	func makeConfiguration() async -> ContextualMenu.Configuration
+	func makeBuilder() async -> ContextualMenu.Builder
 	func makeContextMenu(configurations: [ContextualMenu.Action.Configuration], handler: ((@Sendable (ContextualMenu.Action, AnyContextMenuBuildable) -> Void))?) async -> ContextualMenu
 }
 
 public struct AnyContextMenuBuildable: ContextMenuBuildable {
-	private let _configuration: @Sendable () async -> ContextualMenu.Configuration
+	private let _builder: @Sendable () async -> ContextualMenu.Builder
 	private let _makeMenu: @Sendable ([ContextualMenu.Action.Configuration], (@Sendable (ContextualMenu.Action, AnyContextMenuBuildable) -> Void)?) async -> ContextualMenu
 	
 	public let base: any ContextMenuBuildable
@@ -22,8 +22,8 @@ public struct AnyContextMenuBuildable: ContextMenuBuildable {
 		base.sections
 	}
 	
-	public func makeConfiguration() async -> ContextualMenu.Configuration {
-		await _configuration()
+	public func makeBuilder() async -> ContextualMenu.Builder {
+		await _builder()
 	}
 	
 	public func makeContextMenu(configurations: [ContextualMenu.Action.Configuration], handler: (@Sendable (ContextualMenu.Action, AnyContextMenuBuildable) -> Void)?) async -> ContextualMenu {
@@ -34,7 +34,7 @@ public struct AnyContextMenuBuildable: ContextMenuBuildable {
 		_ base: Base
 	) {
 		self.base = base
-		_configuration = { await base.makeConfiguration() }
+		_builder = { await base.makeBuilder() }
 		_makeMenu = { configurations, handler in
 			await base.makeContextMenu(configurations: configurations, handler: handler)
 		}
