@@ -179,6 +179,13 @@ extension ContextualMenu.Section {
 	) {
 		Item.action(.remove)
 	}
+	
+	public static let delete = ContextualMenu.Section(
+		id: .delete,
+		options: [.displayInline]
+	) {
+		Item.action(.deleteFromLibrary)
+	}
 }
 
 // MARK: - Section IDs
@@ -189,7 +196,8 @@ extension ContextualMenu.Section.ID {
 	public static let share = ContextualMenu.Section.ID("shareSection")
 	public static let queue = ContextualMenu.Section.ID("queueSection")
 	public static let remove = ContextualMenu.Section.ID("removeSection")
-	public static let favorite = ContextualMenu.Section.ID("removeSection")
+	public static let favorite = ContextualMenu.Section.ID("favoriteSection")
+	public static let delete = ContextualMenu.Section.ID("deleteSection")
 }
 
 // MARK: - Builder
