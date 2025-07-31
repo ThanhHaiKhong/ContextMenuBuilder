@@ -153,6 +153,7 @@ extension ContextualMenu.Section {
 		options: [.displayInline]
 	) {
 		Item.action(.favorite)
+		Item.action(.unfavorite)
 		Item.action(.viewFullLyrics)
 	}
 	
